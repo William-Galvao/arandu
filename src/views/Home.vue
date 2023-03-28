@@ -266,7 +266,7 @@ async function uploadImage(e) {
         <!-- Área de exibição dos posts -->
         <div v-if="isMember && !loading" class="flex flex-col py-8 px-4 justify-center items-center gap-y-12 w-full">
             <template v-for="post, index in sortPostsByDate">
-                <div class="flex flex-col justify-center items-center gap-y-2 w-full sm:w-1/2">
+                <div class="flex flex-col justify-center items-center gap-y-2 w-full sm:w-1/2 break-words">
                     <img v-if="post.IMAGE" :src="post.IMAGE" class="w-full border-2 border-green-600 rounded-lg" />
                     <span class="p-2 border-2 bg-green-100 border-green-600 rounded-lg w-full">{{ post.TEXT }}</span>
                     <div class="flex items-center justify-between w-full text-xs">
@@ -304,7 +304,7 @@ async function uploadImage(e) {
                     </div>
                     <div class="flex flex-col w-full" v-if="commentsVisible[index]">
                         <template v-for="comment, index in post.COMMENTS">
-                            <div class="flex flex-col w-full my-2">
+                            <div class="flex flex-col w-full my-2 break-words">
                                 <span class="bg-green-50 p-1"> {{ comment.TEXT }}</span>
                                 <div class="flex items-center justify-between text-xs">
                                     <span v-if="auth.currentUser.displayName == comment.AUTHOR"
