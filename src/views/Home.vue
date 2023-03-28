@@ -96,6 +96,7 @@ function countReacts(arr) {
 
 async function postNewPost() {
     if (!text.value) {
+        $toast.error('Não é possível publicar um texto vazio.')
         return
     }
 
@@ -178,6 +179,7 @@ async function deletePost(id) {
 async function postComment(id, index) {
 
     if (!comment[index]) {
+        $toast.error('Não é possível publicar um comentário vazio.')
         return
     }
 

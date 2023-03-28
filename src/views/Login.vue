@@ -5,9 +5,12 @@ import {auth} from '../firebase';
 import router from '../routes/index'
 import LoadingSpin from '../components/LoadingSpin.vue';
 import { ref } from 'vue';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-sugar.css';
 
 const provider = new GoogleAuthProvider();
 const loading = ref(false)
+const $toast = useToast();
 
 async function googleLogin() {
     loading.value = true
@@ -20,11 +23,12 @@ async function googleLogin() {
     const errorCode = error.code;
     const errorMessage = error.message;
     const email = error.customData.email;
+    $toast.error(errorMessage)
     const credential = GoogleAuthProvider.credentialFromError(error);
   });
 
 }
-
+$toast.error('erro!')
 </script>
 
 <template>
