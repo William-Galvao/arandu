@@ -5,7 +5,7 @@ import { auth, db, storage } from '../firebase';
 import { doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, Timestamp } from "firebase/firestore";
 import { ref as fireRef, uploadBytes, getDownloadURL } from "firebase/storage"
 import { ref, computed, reactive, watch } from 'vue';
-import {useToast} from 'vue-toast-notification';
+import { useToast } from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 
 // Recebe os dados cadastrados na coleção 'users' a partir da função getUser.
@@ -247,16 +247,21 @@ async function uploadImage(e) {
         <!-- Mensagem ao usuário que não é MEMBRO -->
 
         <!-- Área de postagem -->
-        <div v-if="isMember" class="py-8 px-4 flex flex-col justify-center items-center gap-y-4 animate__animated animate__fadeIn">
+        <div v-if="isMember"
+            class="py-8 px-4 flex flex-col justify-center items-center gap-y-4 animate__animated animate__fadeIn">
 
-            <input @change="uploadImage" accept=".jpg,.png" type="file"
-                class="file:bg-green-600 file:text-white file:rounded-lg file:border-none file:shadow-lg file:cursor-pointer w-full sm:w-1/2" />
-            <textarea v-model="text" placeholder="O que você gostaria de contar?"
+            <input :disable="disablePost" @change="uploadImage" accept=".jpg,.png" type="file"
+                class="file:bg-green-600 file:text-white file:rounded-lg file:border-none file:shadow-lg file:cursor-pointer file:font-semibold file:p-2 w-full sm:w-1/2"
+                :class="disablePost && 'file:bg-gray-300 file:text-black'" />
+            <LoadingSpin v-if="image && !urlImage" />
+            <img v-if="urlImage" :src="urlImage" class="w-full sm:w-1/2 border-2 border-green-600 rounded-lg" />
+            <textarea v-model="text"
+                :placeholder="`O que você gostaria de contar, ${auth.currentUser.displayName.split(' ')[0]}?`"
                 class="resize-none w-full sm:w-1/2 p-2 border-2 border-green-600 rounded-lg" />
             <div class="w-full sm:w-1/2 flex items-center justify-end">
                 <button @click="postNewPost" :disable="disablePost"
-                    class="text-white bg-green-600 rounded-lg px-2 py-1 font-semibold hover:scale-105"
-                    :class="disablePost&& 'bg-gray-300 text-black'">
+                    class="text-white bg-green-600 rounded-lg px-2 py-1 font-semibold shadow-lg hover:scale-105"
+                    :class="disablePost && 'bg-gray-300 text-black'">
                     Publicar
                 </button>
             </div>
@@ -272,7 +277,8 @@ async function uploadImage(e) {
                     <div class="flex items-center justify-between w-full text-xs">
                         <span @click="deletePost(post.ID)" v-if="auth.currentUser.displayName == post.AUTHOR"
                             class="text-red-500 underline hover:cursor-pointer">Remover publicação</span>
-                        <span class="self-end">Criado por <span class="text-green-600 font-bold">{{ post.AUTHOR }}</span> em {{ post.WHEN }}</span>
+                        <span class="self-end">Criado por <span class="text-green-600 font-bold">{{ post.AUTHOR }}</span> em
+                            {{ post.WHEN }}</span>
                     </div>
                     <div class="text-sm self-end flex gap-x-2">
                         <div @click="updateReacts(post.ID, 'FUNNY')"
